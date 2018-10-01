@@ -1,7 +1,13 @@
+# open a maze text file
 if ARGV.length < 1
 	puts 'Please name the maze to load.'
-	mazeText = File.open(gets.chomp)
+	mazeFile = File.open(gets.chomp)
 else
-	mazeText = ARGV[0]
+	mazeFile = File.open(ARGV[0])
 end
 
+mazeFile.each_line do |line|
+	line.each_char do |char|
+		
+	end
+end
