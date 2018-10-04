@@ -7,24 +7,50 @@ else
 end
 
 # load the file contents into a 2D char array
+maze = Array.new
 x = y = 0
+start = [0, 0]
+finish = [0, 0]
+
 mazeFile.each_line do |line|
-	line.each_char do |char|
-		maze[y][x] = char
+	temp = Array.new
+	line.chomp.each_char do |char|
+		if char.eql? 'P'
+			start = [x, y]
+		elsif char.eql? '*'
+			finish = [x, y]
+		end
+		temp << char
 		x += 1
 	end
+	maze << temp
+	x = 0
 	y += 1
 end
 
+print maze
+
 # create location data types for each char, including links to up, down, left, right
 # be sure to add the starting P to the frontier
-maze.each do |arr|
-  arr.each do |entry|
-    
-  end
-end
 
 # depth-first
-# bredth-first
+
+# breadth-first
+#
+# pop off frontier
+# for all four cardinal directions:
+# check if it's a wall,
+# then check if it is in the closed set (has been visited),
+# then check if it is the goal,
+# then add it to the frontier if none of the above apply.
+# after all four, add this location to the closed set.
+frontier = Array.new
+frontier << start
+
+loop do
+  current = frontier.pop
+
+end
+
 # greedy best-first
 # A*
