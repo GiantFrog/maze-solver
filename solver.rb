@@ -1,7 +1,8 @@
 # open a maze text file
 if ARGV.length < 1
-	puts 'Please name the maze to load.'
-	mazeFile = File.open(gets.chomp)
+	#puts 'Please name the maze to load.'
+	#mazeFile = File.open(gets.chomp)
+	mazeFile = File.open('medium.txt')
 else
 	mazeFile = File.open(ARGV[0])
 end
@@ -28,8 +29,6 @@ mazeFile.each_line do |line|
 	y += 1
 end
 
-print maze
-
 # create location data types for each char, including links to up, down, left, right
 # be sure to add the starting P to the frontier
 
@@ -44,12 +43,38 @@ print maze
 # then check if it is the goal,
 # then add it to the frontier if none of the above apply.
 # after all four, add this location to the closed set.
-frontier = Array.new
-frontier << start
+$frontier = Array.new
+$closed = Array.new
+$frontier << start
+
+def test testing, current
+	unless testing.eql? '%' || $closed.include?([current[0], current[1]+1])
+		if testing.eql? '*'
+			puts 'We found it!!!!!!'
+			return true
+		else
+			$frontier << testing
+		end
+	end
+	return false
+end
 
 loop do
-  current = frontier.pop
+  current = $frontier.pop	# stored as [x, y]
+	if test maze[current[1]+1][current[0]], current
+		break
+	end
+	if test maze[current[1]][current[0]+1], current
+		break
+	end
+	if test maze[current[1]-1][current[0]], current
+		break
+	end
+	if test maze[current[1]][current[0]-1], current
+		break
+	end
 
+	$closed << current
 end
 
 # greedy best-first
