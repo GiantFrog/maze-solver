@@ -45,37 +45,8 @@ end
 # after all four, add this location to the closed set.
 $frontier = Array.new
 $closed = Array.new
-$frontier << start
 
-def test testing, current
-	unless testing.eql? '%' || $closed.include?([current[0], current[1]+1])
-		if testing.eql? '*'
-			puts 'We found it!!!!!!'
-			return true
-		else
-			$frontier << testing
-		end
-	end
-	return false
-end
 
-loop do
-  current = $frontier.pop	# stored as [x, y]
-	if test maze[current[1]+1][current[0]], current
-		break
-	end
-	if test maze[current[1]][current[0]+1], current
-		break
-	end
-	if test maze[current[1]-1][current[0]], current
-		break
-	end
-	if test maze[current[1]][current[0]-1], current
-		break
-	end
-
-	$closed << current
-end
 
 # greedy best-first
 # A*
