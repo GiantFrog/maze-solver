@@ -1,0 +1,75 @@
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
+import static java.lang.Math.abs;
+
+public class GreedyBestFirst
+{
+	private ArrayList<String> maze;
+	private ArrayList<Node> closed;
+	private PriorityQueue<Node> frontier;
+	private int nodes;
+	
+	public GreedyBestFirst (ArrayList<String> maze)
+	{
+		this.maze = maze;
+		closed = new ArrayList<>();
+		frontier = new PriorityQueue<>(new Comparator<Node>()
+		{
+			@Override
+			public int compare (Node a, Node b)
+			{
+				if (a.getCost() < b.getCost())
+					return -1;
+				else if (a.getCost() > b.getCost())
+					return 1;
+				else return 0;
+			}
+		});
+		nodes = 0;
+	}
+	
+	public Node Solve (int startX, int startY, int finX, int finY)
+	{
+		frontier.add(new Node(startX, startY));
+		nodes++;
+		
+		while (true)
+		{
+			Node current = frontier.poll();
+			if (current == null)
+				return null;
+			
+			if (checkSpace(current, current.getX(), current.getY()+1))	//up
+				return new Node (current.getX(), current.getY()+1, current, abs(finX-current.getX() + finY-current.getY()+1));
+			if (checkSpace(current, current.getX()+1, current.getY()))	//right
+				return new Node (current.getX()+1, current.getY(), current, abs(finX-current.getX()+1 + finY-current.getY()));
+			if (checkSpace(current, current.getX(), current.getY()-1))	//down
+				return new Node (current.getX(), current.getY()-1, current, abs(finX-current.getX() + finY-current.getY()-1));
+			if (checkSpace(current, current.getX()-1, current.getY()))	//left
+				return new Node (current.getX()-1, current.getY(), current, abs(finX-current.getX()-1 + finY-current.getY()));
+			
+			closed.add(current);
+		}
+	}
+	
+	private boolean checkSpace (Node current, int x, int y)
+	{
+		char contents = maze.get(y).charAt(x);
+		Node potential = new Node(x, y);
+		if (contents == '%' || closed.contains(potential) || frontier.contains(potential))
+			//it's a wall!		we've already been here!	//we already know how to get here!
+			return false;
+		
+		else if (contents == '*')
+			return true;	//we found the goal!
+		
+		else
+		{					//open space; keep searching
+			frontier.add(new Node(x, y, current, 1));
+			nodes++;
+			return false;
+		}
+	}
+}

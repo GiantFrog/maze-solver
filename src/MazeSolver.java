@@ -12,7 +12,7 @@ public class MazeSolver
 		File mazeFile;
 		Scanner mazeScan;
 		ArrayList<String> maze = new ArrayList<>();
-		int startX = 0, startY = 0;
+		int startX = 0, startY = 0, finX = 0, finY = 0;
 		//currentNode is used when tracing back the path found
 		Node bfSolution, dfSolution, greedySolution, aStarSolution, currentNode;
 		ArrayList<String> bfMaze, dfMaze, greedyMaze, aStarMaze;
@@ -38,7 +38,7 @@ public class MazeSolver
 			System.out.println("That file could not be found!");
 			exit(1);
 		}
-		//find the starting space
+		//find the starting and goal spaces
 		int counter = 0;
 		for (String line : maze)
 		{
@@ -46,7 +46,11 @@ public class MazeSolver
 			{
 				startX = line.indexOf('P');
 				startY = counter;
-				break;
+			}
+			else if (line.indexOf('*') != -1)
+			{
+				finX = line.indexOf('*');
+				finY = counter;
 			}
 			counter++;
 		}
