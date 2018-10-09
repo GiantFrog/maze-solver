@@ -1,6 +1,6 @@
 public class Node
 {
-	private int x, y, cost;
+	private int x, y, cost, distance;
 	private Node parent;
 	
 	public Node (int x, int y, Node parent, int cost)
@@ -8,6 +8,16 @@ public class Node
 		this.x = x;
 		this.y = y;
 		this.parent = parent;
+		if (parent != null)
+			this.cost = cost + parent.getCost();
+		else this.cost = cost;
+	}
+	public Node (int x, int y, Node parent, int cost, int distance)
+	{
+		this.x = x;
+		this.y = y;
+		this.parent = parent;
+		this.distance = distance;
 		if (parent != null)
 			this.cost = cost + parent.getCost();
 		else this.cost = cost;
@@ -45,6 +55,10 @@ public class Node
 	public int getCost ()
 	{
 		return cost;
+	}
+	public int getDistance ()
+	{
+		return distance;
 	}
 	public Node getParent ()
 	{

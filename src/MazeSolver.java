@@ -19,8 +19,10 @@ public class MazeSolver
 		
 		if (args.length < 1)
 		{
-			//System.out.println("Please name the file to load");
-			mazeFile = new File("medium.txt");
+			System.out.println("Please name the file to load.");
+			Scanner in = new Scanner(System.in);
+			mazeFile = new File(in.nextLine());
+			in.close();
 		}
 		else
 		{
@@ -32,6 +34,7 @@ public class MazeSolver
 			
 			while (mazeScan.hasNextLine())
 				maze.add(mazeScan.nextLine());
+			mazeScan.close();
 		}
 		catch (FileNotFoundException eh)
 		{
@@ -76,7 +79,7 @@ public class MazeSolver
 		{
 			System.out.println(line);
 		}
-		System.out.println("Cost: " + bfSolution.getCost() + "          Nodes Expanded: " + bfs.getNodesExpanded());
+		System.out.println("Cost: " + bfSolution.getCost() + "          Nodes Expanded: " + bfs.getNodesExpanded() + "\n");
 		
 		
 		//start depth-first!
@@ -99,6 +102,50 @@ public class MazeSolver
 		{
 			System.out.println(line);
 		}
-		System.out.println("Cost: " + dfSolution.getCost() + "          Nodes Expanded: " + dfs.getNodesExpanded());
+		System.out.println("Cost: " + dfSolution.getCost() + "          Nodes Expanded: " + dfs.getNodesExpanded() + "\n");
+		
+		//start greedy!
+		GreedyBestFirst gbfs = new GreedyBestFirst(maze, finX, finY);
+		greedySolution = gbfs.solve(startX, startY);
+		greedyMaze = new ArrayList<>(maze);
+		
+		currentNode = greedySolution.getParent();
+		while (currentNode.getParent() != null)
+		{
+			StringBuilder changes = new StringBuilder(greedyMaze.get(currentNode.getY()));
+			changes.setCharAt(currentNode.getX(), '.');
+			greedyMaze.set(currentNode.getY(), changes.toString());
+			
+			currentNode = currentNode.getParent();
+		}
+		
+		System.out.println("Greedy Best-First Search Results!");
+		for (String line : greedyMaze)
+		{
+			System.out.println(line);
+		}
+		System.out.println("Cost: " + greedySolution.getCost() + "          Nodes Expanded: " + gbfs.getNodesExpanded() + "\n");
+		
+		//start A*!
+		AStar aStar = new AStar(maze, finX, finY);
+		aStarSolution = aStar.solve(startX, startY);
+		aStarMaze = new ArrayList<>(maze);
+		
+		currentNode = aStarSolution.getParent();
+		while (currentNode.getParent() != null)
+		{
+			StringBuilder changes = new StringBuilder(aStarMaze.get(currentNode.getY()));
+			changes.setCharAt(currentNode.getX(), '.');
+			aStarMaze.set(currentNode.getY(), changes.toString());
+			
+			currentNode = currentNode.getParent();
+		}
+		
+		System.out.println("A* Search Results!");
+		for (String line : aStarMaze)
+		{
+			System.out.println(line);
+		}
+		System.out.println("Cost: " + aStarSolution.getCost() + "          Nodes Expanded: " + aStar.getNodesExpanded());
 	}
 }

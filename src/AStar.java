@@ -4,14 +4,14 @@ import java.util.PriorityQueue;
 
 import static java.lang.Math.abs;
 
-public class GreedyBestFirst
+public class AStar
 {
 	private ArrayList<String> maze;
 	private ArrayList<Node> closed;
 	private PriorityQueue<Node> frontier;
 	private int nodes, finX, finY;
 	
-	public GreedyBestFirst (ArrayList<String> maze, int finX, int finY)
+	public AStar (ArrayList<String> maze, int finX, int finY)
 	{
 		this.maze = maze;
 		closed = new ArrayList<>();
@@ -20,9 +20,9 @@ public class GreedyBestFirst
 			@Override
 			public int compare (Node a, Node b)
 			{
-				if (a.getDistance() < b.getDistance())
+				if (a.getDistance()+a.getCost() < b.getDistance()+b.getCost())
 					return -1;
-				else if (a.getDistance() > b.getDistance())
+				else if (a.getDistance()+a.getCost() > b.getDistance()+b.getCost())
 					return 1;
 				else return 0;
 			}
@@ -31,7 +31,6 @@ public class GreedyBestFirst
 		this.finX = finX;
 		this.finY = finY;
 	}
-	
 	public Node solve (int startX, int startY)
 	{
 		frontier.add(new Node(startX, startY));
@@ -43,14 +42,14 @@ public class GreedyBestFirst
 			if (current == null)
 				return null;
 			
-			if (checkSpace(current, current.getX(), current.getY()+1))	//up			I guess this should always be 0
-				return new Node (current.getX(), current.getY()+1, current, 1, abs(finX-current.getX() + finY-current.getY()+1));
-			if (checkSpace(current, current.getX()+1, current.getY()))	//right
-				return new Node (current.getX()+1, current.getY(), current, 1, abs(finX-current.getX()+1 + finY-current.getY()));
-			if (checkSpace(current, current.getX(), current.getY()-1))	//down
-				return new Node (current.getX(), current.getY()-1, current, 1, abs(finX-current.getX() + finY-current.getY()-1));
-			if (checkSpace(current, current.getX()-1, current.getY()))	//left
-				return new Node (current.getX()-1, current.getY(), current, 1, abs(finX-current.getX()-1 + finY-current.getY()));
+			if (checkSpace(current, current.getX(), current.getY() + 1))    //up			I guess this should always be 0
+				return new Node(current.getX(), current.getY() + 1, current, 1, 0);
+			if (checkSpace(current, current.getX() + 1, current.getY()))    //right
+				return new Node(current.getX() + 1, current.getY(), current, 1, 0);
+			if (checkSpace(current, current.getX(), current.getY() - 1))    //down
+				return new Node(current.getX(), current.getY() - 1, current, 1, 0);
+			if (checkSpace(current, current.getX() - 1, current.getY()))    //left
+				return new Node(current.getX() - 1, current.getY(), current, 1, 0);
 			
 			closed.add(current);
 		}
