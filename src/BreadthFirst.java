@@ -7,17 +7,20 @@ public class BreadthFirst
 	private ArrayList<String> maze;
 	private ArrayList<Node> closed;
 	private Queue<Node> frontier;
+	private int nodes;
 	
 	public BreadthFirst (ArrayList<String> maze)
 	{
 		this.maze = maze;
 		closed = new ArrayList<>();
 		frontier = new LinkedList<>();
+		nodes = 0;
 	}
 	
 	public Node solve (int startX, int startY)
 	{
 		frontier.add(new Node(startX, startY));
+		nodes++;
 		
 		while (true)
 		{
@@ -33,14 +36,17 @@ public class BreadthFirst
 				return new Node (current.getX(), current.getY()-1, current, 1);
 			if (checkSpace(current, current.getX()-1, current.getY()))	//left
 				return new Node (current.getX()-1, current.getY(), current, 1);
+			
+			closed.add(current);
 		}
 	}
 	
 	private boolean checkSpace (Node current, int x, int y)
 	{
 		char contents = maze.get(y).charAt(x);
-		if (contents == '%' || closed.contains(new Node(x, y)))
-			//it's a wall!						we've already been here!
+		Node potential = new Node(x, y);
+		if (contents == '%' || closed.contains(potential) || frontier.contains(potential))
+			//it's a wall!		we've already been here!	//we already know how to get here!
 			return false;
 		
 		else if (contents == '*')
@@ -49,7 +55,13 @@ public class BreadthFirst
 		else
 		{					//open space; keep searching
 			frontier.add(new Node(x, y, current, 1));
+			nodes++;
 			return false;
 		}
+	}
+	
+	public int getNodesExpanded()
+	{
+		return nodes;
 	}
 }

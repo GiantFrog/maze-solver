@@ -13,6 +13,8 @@ public class MazeSolver
 		Scanner mazeScan;
 		ArrayList<String> maze = new ArrayList<>();
 		int startX = 0, startY = 0;
+		Node bfSolution, dfSolution, greedySolution, aStarSolution;
+		ArrayList<String> bfMaze, dfMaze, greedyMaze, aStarMaze;
 		
 		if (args.length < 1)
 		{
@@ -47,9 +49,24 @@ public class MazeSolver
 			}
 			counter++;
 		}
-		System.out.println(maze.get(1).charAt(0));
-		
 		BreadthFirst bfs = new BreadthFirst(maze);
-		bfs.solve(startX, startY);
+		bfSolution = bfs.solve(startX, startY);
+		bfMaze = new ArrayList<>(maze);
+		
+		//trace the route back to the beginning
+		Node currentNode = bfSolution.getParent();
+		while (currentNode.getParent() != null)
+		{
+			StringBuilder changes = new StringBuilder(bfMaze.get(currentNode.getY()));
+			changes.setCharAt(currentNode.getX(), '.');
+			bfMaze.set(currentNode.getY(), changes.toString());
+			
+			currentNode = currentNode.getParent();
+		}
+		for (String line : bfMaze)
+		{
+			System.out.println(line);
+		}
+		System.out.println("Cost: " + bfSolution.getCost() + "          Nodes Expanded: " + bfs.getNodesExpanded());
 	}
 }
